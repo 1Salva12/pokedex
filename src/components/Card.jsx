@@ -1,33 +1,33 @@
-import React, { useContext, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { RingLoader } from 'react-spinners';
-import { PageContext } from '../context/PageContext';
 
-const Card = ({ url, nombre, noPokemon, pokemon, }) => {
+const Card = ({ url, nombre, noPokemon, pokemon, onSeleccionar }) => {
     const [imagen, setImagen] = useState(null);
-    const {setPokemonSeleccionado} = useContext(PageContext)
     const [cargando, setCargando] = useState(true);
 
-    const obtenerImagen = async () => {
-        try {
-            const resultado = await fetch(url);
-            const datosPokemon = await resultado.json();
-            setImagen(datosPokemon.sprites.other.dream_world.front_default);
-        } catch (error) {
-            console.error('Error al obtener imagen:', error);
-        } finally {
-            setCargando(false);
-        }
-    };
-
     useEffect(() => {
-        obtenerImagen();
+        const obtenerImagen = async () => {
+            try {
+                const resultado = await fetch(url);
+                const datosPokemon = await resultado.json();
+                setImagen(datosPokemon.sprites.other.dream_world.front_default);
+            } catch (error) {
+                console.error('Error al obtener imagen:', error);
+            } finally {
+                setCargando(false);
+            }
+        };
+
+        if (url) {
+            obtenerImagen();
+        }
     }, [url]);
 
     return (
         <li
-        onDoubleClick={() => setPokemonSeleccionado(pokemon)}
-         className='transition duration-300 hover:scale-105 h-[180px] mb-40'>
-             <div className='flex justify-center items-center h-[150px]'>
+            onClick={() => onSeleccionar && onSeleccionar(pokemon)}
+            className='transition duration-300 hover:scale-105 h-[180px] mb-40'>
+            <div className='flex justify-center items-center h-[150px]'>
                 {cargando ? (
                     <RingLoader color='#e71284' size={50} />
                 ) : (

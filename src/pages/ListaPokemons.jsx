@@ -4,68 +4,72 @@ import { ListPlus, ScanSearch } from "lucide-react";
 
 // Aqui se ejecuta JavaScript
 
-const ListaPokemons = ({agregarPokemon}) => {
+const ListaPokemons = ({ agregarPokemon }) => {
 
     // Aqui se ejecuta jsx
     const URL = "https://pokeapi.co/api/v2/pokemon/";
     const [pokemons, setPokemons] = useState([]);
     const [next, setNext] = useState(null);
-    const [busqueda, setBusqueda] = useState ("");
+    const [busqueda, setBusqueda] = useState("");
 
-    const obtenerPokemons = async (url)=>{
+    const obtenerPokemons = async (url) => {
         try {
             const resultado = await fetch(url);
             const datosPokemon = await resultado.json();
-            setPokemons([...pokemons, ...datosPokemon.results]);
+            setPokemons((prevPokemons) => [...prevPokemons, ...datosPokemon.results]);
             setNext(datosPokemon.next);
-            
+
         } catch (error) {
-            console .error(error);
+            console.error(error);
         }
     }
 
-    useEffect(()=>{
+    useEffect(() => {
         console.log(pokemons);
-    },[pokemons]);
+    }, [pokemons]);
 
-    useEffect(()=>{
-        obtenerPokemons(URL);
-    },[]);
+    useEffect(() => {
+        const cargarPokemons = async () => {
+            await obtenerPokemons(URL);
+        };
 
-    const pokemonsFiltrados = pokemons.filter((pokemon)=>
-    pokemon.name.toLowerCase().includes(
-        busqueda.toLowerCase()
-    )
-);
+        cargarPokemons();
+    }, []);
+
+    const pokemonsFiltrados = pokemons.filter((pokemon) =>
+        pokemon.name.toLowerCase().includes(
+            busqueda.toLowerCase()
+        )
+    );
 
     return (
         <section>
             <div className=" flex justify-center mb-10">
                 <form className="flex border-2 border-red-900 px-2">
                     <input type="text" placeholder="Buscar un Pokemon..."
-                    className="outline-none" value={busqueda} onChange={(e)=>setBusqueda(e.target.value)}
+                        className="outline-none" value={busqueda} onChange={(e) => setBusqueda(e.target.value)}
                     />
-                    <ScanSearch className="text-red-900"/>
+                    <ScanSearch className="text-red-900" />
                 </form>
             </div>
             <ul className="flex flex-wrap w-full justify-center gap-2">
                 {
-                    pokemonsFiltrados.map((pokemon, indice)=>(
-                    <Card 
-                    key={indice}
-                    url={pokemon.url} 
-                    nombre={pokemon.name}
-                    noPokemon={indice + 1}
-                    pokemon={pokemon}
-                    
-                    />
-                ))
+                    pokemonsFiltrados.map((pokemon, indice) => (
+                        <Card
+                            key={pokemon.name}
+                            url={pokemon.url}
+                            nombre={pokemon.name}
+                            noPokemon={indice + 1}
+                            pokemon={pokemon}
+                            onSeleccionar={agregarPokemon}
+                        />
+                    ))
                 }
             </ul>
             <div className="flex w-full justify-center my-10">
                 {
                     next &&
-                    <button onClick={()=>obtenerPokemons(next)} className="flex gap-1 bg-red-900 text-white px-2 py-1 rounded shadow cursor-pointer"><ListPlus/>Mostrar mas</button>
+                    <button onClick={() => obtenerPokemons(next)} className="flex gap-1 bg-red-900 text-white px-2 py-1 rounded shadow cursor-pointer"><ListPlus />Mostrar mas</button>
                 }
             </div>
         </section>

@@ -1,6 +1,6 @@
-import { createContext, useContext } from "react";
+import { createContext } from "react";
 
-export const PageContext = createContext("");
+export const PageContext = createContext({});
 
 
 

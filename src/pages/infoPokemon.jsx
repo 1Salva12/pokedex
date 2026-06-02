@@ -1,9 +1,8 @@
 import { useEffect, useState, useContext } from 'react';
 import { PageContext } from '../context/PageContext';
 import { RingLoader } from 'react-spinners';
-import { AlignCenter } from 'lucide-react';
 
-const infoPokemon = () => {
+const InfoPokemon = () => {
     const { pokemonSeleccionado, setPokemonSeleccionado } = useContext(PageContext)
     const [imagen, setImagen] = useState();
     const [datos, setDatos] = useState(null);
@@ -51,8 +50,6 @@ const infoPokemon = () => {
         datos && datos.types.length > 0
             ? datos.types[0].type.name
             : "unknown";
-
-    const { id, height, weight, types, abilities, stats } = datos || {};
 
     return (
         <div className="relative text-center p-5">
@@ -152,4 +149,4 @@ const infoPokemon = () => {
         </div>
     );
 }
-export default infoPokemon;
+export default InfoPokemon;
